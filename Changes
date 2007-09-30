@@ -1,0 +1,10 @@
+Revision history for Perl extension Alien::IE7.
+
+0.9.1   Sun Sep 30 13:24 PDT 2007
+    - added POD docs to Alien::IE7
+    - added "--quiet" command line argument to "ie7-install"
+    - changed versioning to "${IE7_version}.${alien_release}", so that releases
+      could be issued out of sync with upstream IE7.
+
+0.9     Wed Jul 25 12:17 PDT 2007
+    - First public version.  Installs IE7 0.9
