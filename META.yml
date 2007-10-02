@@ -1,6 +1,6 @@
 ---
 name: Alien-IE7
-version: 0.9.1
+version: 0.9.2
 author:
   - Graham TerMarsch (cpan@howlingfrog.com)
 abstract: installing and finding IE7 JS compatibility library
@@ -15,7 +15,7 @@ build_requires:
 provides:
   Alien::IE7:
     file: lib/Alien/IE7.pm
-    version: 0.9.1
+    version: 0.9.2
 generated_by: Module::Build version 0.2805
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

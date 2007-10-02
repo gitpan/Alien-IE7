@@ -6,16 +6,17 @@ package Alien::IE7;
 use strict;
 use warnings;
 use Carp;
+use File::Spec;
+use File::Find qw(find);
 use File::Copy qw(copy);
 use File::Path qw(mkpath);
-use File::Find qw(find);
-use File::Basename qw(dirname);
+use File::Basename qw(basename dirname);
 
 ###############################################################################
 # Version numbering
 ###############################################################################
 our $IE7_VERSION = '0.9';
-our $VERSION     = '0.9.1';
+our $VERSION     = '0.9.2';
 
 ###############################################################################
 # Subroutine:   version()
@@ -41,6 +42,40 @@ sub path {
 }
 
 ###############################################################################
+# Subroutine:   to_blib()
+###############################################################################
+# Returns a hash containing paths to the source files to be copied, and their
+# relative destinations.
+###############################################################################
+sub to_blib {
+    my $class = shift;
+    my $path  = $class->path();
+    my %blib;
+    File::Find::find(
+        sub {
+            -f && do {
+                my $dstdir = $File::Find::dir;
+                $dstdir =~ s{^$path/?}{};
+                $blib{$File::Find::name} = join('', $dstdir, $_);
+            }
+        },
+        $path
+        );
+    return %blib;
+}
+
+###############################################################################
+# Subroutine:   files()
+###############################################################################
+# Returns the list of files that are installed by Alien::IE7.
+###############################################################################
+sub files {
+    my $class = shift;
+    my %blib  = $class->to_blib();
+    return sort values %blib;
+}
+
+###############################################################################
 # Subroutine:   install($destdir)
 # Parameters:   $destdir    - Destination directory
 ###############################################################################
@@ -49,19 +84,19 @@ sub path {
 ###############################################################################
 sub install {
     my ($class, $destdir) = @_;
-    if (!-d $destdir) {
-        mkpath( [$destdir] ) || croak "can't create '$destdir'; $!";
-    }
-    my $path = $class->path();
 
-    # Install files...
-    my @files = grep { -f $_ }
-                    ( glob("$path/*.js"),
-                      glob("$path/*.htc"),
-                      glob("$path/*.gif"),
-                    );
-    foreach my $file (@files) {
-        copy( $file, $destdir ) || croak "can't copy '$file' to '$destdir'; $!";
+    # install our files
+    my %blib = $class->to_blib();
+    while (my ($srcfile, $dest) = each %blib) {
+        # Get full path to destination file
+        my $destfile = File::Spec->catfile( $destdir, $dest );
+        # create any required install directories
+        my $instdir = dirname( $destfile );
+        if (!-d $instdir) {
+            mkpath( $instdir ) || croak "can't create '$instdir'; $!";
+        }
+        # install the file
+        copy( $srcfile, $destfile ) || croak "can't copy '$srcfile' to '$instdir'; $!";
     }
 }
 
@@ -98,6 +133,15 @@ version number of the Perl wrapper).
 =item path()
 
 Returns the path to the available copy of IE7. 
+
+=item to_blib()
+
+Returns a hash containing paths to the source files to be copied, and their
+relative destinations. 
+
+=item files()
+
+Returns the list of files that are installed by Alien::IE7. 
 
 =item install($destdir)
 

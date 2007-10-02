@@ -1,21 +1,35 @@
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More;
 use Test::Exception;
 use File::Path qw(rmtree);
 use Alien::IE7;
 
 my $dir = 't/eraseme';
 
-# Do an install and make sure that at least one file from each of the 'lib' and
-# 'src' directories was installed properly.
-Alien::IE7->install( $dir );
-foreach my $file (qw( ie7-core.js ie7-content.htc ie7.gif )) {
-    ok( -e "$dir/$file", "$dir/$file exists" );
+# Figure out how many tests we're going to run
+my @files = Alien::IE7->files();
+plan tests => 1 + scalar @files;
+
+# Clean up from any previous test run
+cleanup_old_test_run: {
+    rmtree( $dir ) if (-e $dir);
 }
 
-# Re-install into the same directory, to make sure that it doesn't choke.
-lives_ok { Alien::IE7->install($dir) };
+# Install, and make sure that all of the files got installed properly
+install_ie7: {
+    Alien::IE7->install( $dir );
+    foreach my $file (@files) {
+        ok( -e "$dir/$file", "$file exists" );
+    }
+}
 
-# Clean out the test directory
-rmtree( $dir );
+# Install on top of an existing install; shouldn't choke
+reinstall_ie7: {
+    lives_ok { Alien::IE7->install($dir) };
+}
+
+# Clean up after ourselves
+cleanup: {
+    rmtree( $dir );
+}

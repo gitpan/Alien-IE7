@@ -3,10 +3,7 @@ package MY::Build;
 use strict;
 use warnings;
 use base qw(Module::Build);
-use File::Path qw(mkpath);
 use File::Copy qw(copy);
-use Archive::Zip qw(:ERROR_CODES);
-use Alien::IE7;
 
 sub ACTION_code {
     my $self = shift;
@@ -16,8 +13,7 @@ sub ACTION_code {
 }
 
 sub ie7_archive {
-    my $self = shift;
-    return join( '', $self->ie7_dir(), '.zip' );
+    return 'IE7_0_9.zip';
 }
 
 sub ie7_dir {
@@ -47,14 +43,15 @@ sub install_ie7 {
     my $self = shift;
     return if (-d $self->ie7_target_dir());
 
+    require Archive::Zip;
     print "Installing IE7...\n";
     my $zip = Archive::Zip->new();
-    unless ($zip->read($self->ie7_archive()) == AZ_OK) {
+    unless ($zip->read($self->ie7_archive()) == Archive::Zip::AZ_OK()) {
         die "unable to open IE7 zip archive\n";
     }
     my $src = $self->ie7_dir();
     my $dst = $self->ie7_target_dir();
-    unless ($zip->extractTree($src,$dst) == AZ_OK) {
+    unless ($zip->extractTree($src,$dst) == Archive::Zip::AZ_OK()) {
         die "unable to extract IE7 zip archive\n";
     }
 }
