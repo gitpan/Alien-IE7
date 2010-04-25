@@ -1,5 +1,8 @@
 Revision history for Perl extension Alien::IE7.
 
+0.9.3   Fri Apr 23 22:19 PDT 2010
+    - switch to Git
+
 0.9.2   Tue Oct  2 11:44 PDT 2007
     - added POD coverage tests
     - rewritten install routine

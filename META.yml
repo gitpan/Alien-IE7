@@ -1,12 +1,12 @@
 ---
 name: Alien-IE7
-version: 0.9.2
+version: 0.9.3
 author:
   - Graham TerMarsch (cpan@howlingfrog.com)
 abstract: installing and finding IE7 JS compatibility library
 license: perl
 resources:
-  license: http://dev.perl.org/licenses/
+  license: ~
 requires:
   perl: 5.6.0
 build_requires:
@@ -15,8 +15,8 @@ build_requires:
 provides:
   Alien::IE7:
     file: lib/Alien/IE7.pm
-    version: 0.9.2
-generated_by: Module::Build version 0.2805
+    version: 0.9.3
+generated_by: Module::Build version 0.32
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2

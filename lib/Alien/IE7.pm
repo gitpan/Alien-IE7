@@ -16,7 +16,7 @@ use File::Basename qw(basename dirname);
 # Version numbering
 ###############################################################################
 our $IE7_VERSION = '0.9';
-our $VERSION     = '0.9.2';
+our $VERSION     = '0.9.3';
 
 ###############################################################################
 # Subroutine:   version()
